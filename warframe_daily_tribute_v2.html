@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>워프레임 일일 접속 보상 - 현실적인 플래티넘 할인 예측기</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        body {
+            background-color: #0a0e14;
+            color: #d1d5db;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: linear-gradient(145deg, #111823, #161f2f);
+            border: 1px solid #233247;
+            border-radius: 16px;
+            padding: 35px;
+            max-width: 650px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+        h1 {
+            font-size: 26px;
+            color: #38bdf8;
+            margin-bottom: 8px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #94a3b8;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .card {
+            background-color: #0b111a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            font-size: 14px;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            background-color: #070a0f;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+        input[type="number"]:focus, select:focus {
+            border-color: #38bdf8;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #0284c7, #0369a1);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+        }
+        button:hover {
+            background: linear-gradient(90deg, #0369a1, #075985);
+            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
+        }
+        button:active {
+            transform: scale(0.99);
+        }
+        .result-box {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #070a0f;
+            border-left: 4px solid #f59e0b;
+            border-radius: 6px;
+            display: none;
+        }
+        .result-title {
+            font-size: 18px;
+            color: #f59e0b;
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .result-item {
+            margin-bottom: 12px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 8px;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .result-value {
+            color: #fff;
+            font-weight: bold;
+            text-align: right;
+        }
+        .highlight-red { color: #ef4444; }
+        .highlight-green { color: #10b981; }
+        .highlight-amber { color: #f59e0b; }
+        
+        .analysis-text {
+            font-size: 13.5px;
+            color: #94a3b8;
+            margin-top: 15px;
+            line-height: 1.6;
+            background-color: #111827;
+            padding: 12px;
+            border-radius: 6px;
+        }
+        .info-section {
+            margin-top: 30px;
+            border-top: 1px solid #233247;
+            padding-top: 20px;
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+        .info-section h3 {
+            color: #cbd5e1;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .info-section ul {
+            padding-left: 18px;
+        }
+        .info-section li {
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>WARFRAME DAILY TRIBUTE</h1>
+    <div class="subtitle">플래티넘 20% / 50% / 75% 할인 정밀 예측기</div>
+
+    <div class="card">
+        <div class="form-group">
+            <label for="days">현재 누적 출석일 수</label>
+            <input type="number" id="days" placeholder="예: 150 (미입력 시 0일 기준)" min="0">
+        </div>
+
+        <div class="form-group">
+            <label for="playStyle">최근 접속 패턴</label>
+            <select id="playStyle">
+                <option value="daily">매일 성실하게 출석 중 (하드 유저)</option>
+                <option value="casual">며칠에 한 번씩 띄엄띄엄 접속 중</option>
+                <option value="return">수주일~수개월 만에 방금 복귀함</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="lastCoupon">마지막 할인 쿠폰(종류 무관) 획득 시기</label>
+            <select id="lastCoupon">
+                <option value="recent">최근 1~2주 이내</option>
+                <option value="month">한 달 전 쯤</option>
+                <option value="long">기억도 안 날 정도로 오래됨 (3개월 이상)</option>
+            </select>
+        </div>
+    </div>
+
+    <button onclick="calculateRealisticDiscount()">현실적인 기대값 계산하기</button>
+
+    <div class="result-box" id="resultBox">
+        <div class="result-title">📊 시스템 기반 예측 분석 결과</div>
+        
+        <div class="result-item">
+            <span>75% 할인 쿠폰 예상 대기 기간:</span>
+            <span class="result-value highlight-red" id="expected75">분석 대기 중</span>
+        </div>
+        <div class="result-item">
+            <span>20% 또는 50% 할인 등장 주기:</span>
+            <span class="result-value" id="expectedNormal">분석 대기 중</span>
+        </div>
+        <div class="result-item">
+            <span>현재 유저 상태 가중치 페널티:</span>
+            <span class="result-value" id="penaltyStatus">분석 대기 중</span>
+        </div>
+        <div class="result-item">
+            <span>데일리 트리뷰트 자원 배율:</span>
+            <span class="result-value highlight-green" id="resourceMultiplier">x1.00</span>
+        </div>
+
+        <div class="analysis-text" id="analysisText">
+            여기에 세부 분석 리포트가 표시됩니다.
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h3>💡 워프레임 할인 메커니즘의 차가운 현실</h3>
+        <ul>
+            <li><strong>독립 확률이 아닌 '풀(Pool)' 시스템:</strong> 할인 보상은 단독으로 구르는 것이 아니라 크레딧, 자원, 부스터 등과 한 바구니(Pool)에 묶여 있으며, 할인 쿠폰이 등장할 확률 자체가 낮게 통제됩니다.</li>
+            <li><strong>20% / 50% / 75%의 통합 배정:</strong> 주사위가 '할인 쿠폰'에 먼저 도달하더라도, 그 안에서 75%가 나올 확률은 극히 희박하며 대부분 20%나 50%가 선점해 버립니다.</li>
+            <li><strong>매일 접속자의 역설 (Retention Penalty):</strong> DE(개발사)는 유저의 리텐션을 유지하기 위해 <strong>장기 미접속 복귀자</strong>에게 쿠폰 가중치를 비정상적으로 높게 부여합니다. 역설적으로 매일 출석하는 충성 유저는 내부 '쿨다운 가중치'에 걸려 수개월간 75% 구경을 못 하는 것이 정상적인 시스템 설계입니다.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    function calculateRealisticDiscount() {
+        const daysInput = document.getElementById('days').value;
+        const days = daysInput ? parseInt(daysInput) : 0;
+        const playStyle = document.getElementById('playStyle').value;
+        const lastCoupon = document.getElementById('lastCoupon').value;
+
+        const resultBox = document.getElementById('resultBox');
+        const expected75 = document.getElementById('expected75');
+        const expectedNormal = document.getElementById('expectedNormal');
+        const penaltyStatus = document.getElementById('penaltyStatus');
+        const resourceMultiplier = document.getElementById('resourceMultiplier');
+        const analysisText = document.getElementById('analysisText');
+
+        // 자원 배율 공식: 1 + round(Days * 0.05) -> 실제 공식은 일수에 따라 선형 증가
+        let multiplier = (1 + (days * 0.05)).toFixed(2);
+        resourceMultiplier.innerText = "x" + multiplier + " 배";
+
+        let text75 = "";
+        let textNormal = "";
+        let textPenalty = "";
+        let textAnalysis = "";
+
+        // 현실적인 알고리즘 계산 테이블
+        if (playStyle === 'daily') {
+            textPenalty = "⚠️ 매우 높음 (꾸준한 접속으로 인해 시스템이 구매 유도 필요성을 낮게 잡음)";
+            
+            if (lastCoupon === 'recent') {
+                text75 = "최소 4개월 ~ 6개월 이상 소요 예상";
+                textNormal = "약 3주 ~ 5주 주기 (20% 또는 50%)";
+                textAnalysis = "현재 매일 접속 중이시며 최근에 쿠폰을 받으셨기 때문에, 시스템 내부의 '할인 쿨다운'과 '최저 가중치'가 동시에 작동하고 있습니다. 이 상태에서는 몇 달 동안 출석해도 75% 할인은 구경하기 힘든 것이 정상입니다. 가끔 뜨는 20%나 50%가 풀을 초기화할 수 있습니다.";
+            } else if (lastCoupon === 'month') {
+                text75 = "약 3개월 ~ 5개월 내외";
+                textNormal = "약 2주 ~ 4주 주기";
+                textAnalysis = "마지막 쿠폰 이후 한 달이 지났으나 매일 출석 중이므로 75% 가중치는 여전히 바닥을 치고 있습니다. 시스템은 유저가 이미 게임을 열심히 즐기고 있다고 판단하므로, 인위적인 접속 유도용 75%보다는 20~50% 쿠폰을 던져줄 확률이 훨씬 높습니다.";
+            } else {
+                text75 = "약 2개월 ~ 4개월 이내 (확률 서서히 상승 중)";
+                textNormal = "약 2주 이내 등장 가능성 높음";
+                textAnalysis = "쿠폰을 안 보신 지 3개월이 넘어가면서 시스템 내의 '할인 갈증 지수(Pity Count)'가 상한선에 도달하고 있습니다. 하지만 여전히 매일 접속 중이시라면 복귀 유저 버프를 받지 못하므로, 당장 내일 뜨더라도 20%나 50%일 확률이 높으며 75%는 앞으로도 수개월의 인내가 필요할 수 있습니다.";
+            }
+        } 
+        
+        else if (playStyle === 'casual') {
+            textPenalty = "ℹ️ 보통 (안정적인 주기 패턴)";
+            
+            if (lastCoupon === 'recent') {
+                text75 = "약 3개월 ~ 5개월 이내";
+                textNormal = "약 3주 ~ 4주 주기";
+                textAnalysis = "간헐적 접속 유저이므로 매일 접속자보다는 가중치 방어가 양호하지만, 최근 쿠폰 획득 이력으로 인해 75% 당첨 테이블이 잠겨있습니다. 당분간은 자원이나 부스터 위주의 보상이 주를 이룰 것입니다.";
+            } else {
+                text75 = "약 1개월 ~ 3개월 이내";
+                textNormal = "1주 ~ 2주 이내 등장 유력";
+                textAnalysis = "띄엄띄엄 접속하시는 패턴에 쿠폰 공백기까지 겹쳐, 시스템이 유저를 잡아두기 위해 조만간 할인을 제시할 타이밍입니다. 50% 이상의 고효율 쿠폰이 등장할 확률이 하드 유저보다는 눈에 띄게 높습니다.";
+            }
+        } 
+        
+        else if (playStyle === 'return') {
+            textPenalty = "✨ 없음 (오히려 최고 등급 가중치 보너스 적용)";
+            text75 = "🔥 즉시 ~ 7일 이내 매우 유력";
+            textNormal = "1~2일 내 무조건 등장 수준";
+            textAnalysis = "<strong>축하합니다. 시스템의 설계적 허점을 찌르는 상태입니다.</strong> 워프레임 데일리 트리뷰트의 최고 존엄 보정인 '복귀 유저 가중치'가 발동했습니다. DE의 알고리즘은 복귀 유저에게 첫 1주일 내로 50%~75% 쿠폰을 던져 지갑을 열게 만들 확률이 극도로 높게 설정되어 있습니다. 며칠 내로 75%를 보게 될 확률이 가장 높은 상태입니다.";
+        }
+
+        expected75.innerText = text75;
+        expectedNormal.innerText = textNormal;
+        penaltyStatus.innerText = textPenalty;
+        analysisText.innerHTML = textAnalysis;
+
+        resultBox.style.style = "block";
+        resultBox.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
